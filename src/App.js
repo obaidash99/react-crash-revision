@@ -1,7 +1,9 @@
 import Header from './components/Header';
-import Tasks from './components/Tasks';
-import AddTask from './components/AddTask';
 import { useState, useEffect } from 'react';
+import Footer from './components/Footer';
+import About from './components/About';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Home from './components/Home';
 
 function App() {
 	const [showAddTask, setShowAddTask] = useState(false);
@@ -67,7 +69,7 @@ function App() {
 			body: JSON.stringify(updatedTask),
 		});
 
-		const data = await res.json()
+		const data = await res.json();
 
 		setTasks(
 			tasks.map((task) => (task.id === id ? { ...task, reminder: data.reminder } : task))
@@ -75,15 +77,28 @@ function App() {
 	};
 
 	return (
-		<div className="container">
-			<Header onAdd={() => setShowAddTask(!showAddTask)} showAdd={showAddTask} />
-			{showAddTask && <AddTask onAdd={addTask} />}
-			{tasks.length > 0 ? (
-				<Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder} />
-			) : (
-				'No Tasks!'
-			)}
-		</div>
+		<Router>
+			<div className="container">
+				<Header onAdd={() => setShowAddTask(!showAddTask)} showAdd={showAddTask} />
+				<Routes>
+					<Route
+						path="/"
+						exact
+						component={
+							<Home
+								showAddTask={showAddTask}
+								addTask={addTask}
+								tasks={tasks}
+								deleteTask={deleteTask}
+								toggleReminder={toggleReminder}
+							/>
+						}
+					/>
+					<Route path="/about" component={About} />
+				</Routes>
+				<Footer />
+			</div>
+		</Router>
 	);
 }
 
