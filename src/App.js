@@ -1,9 +1,10 @@
 import Header from './components/Header';
+import Tasks from './components/Tasks';
+import AddTask from './components/AddTask';
 import { useState, useEffect } from 'react';
 import Footer from './components/Footer';
 import About from './components/About';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './components/Home';
 
 function App() {
 	const [showAddTask, setShowAddTask] = useState(false);
@@ -84,17 +85,18 @@ function App() {
 					<Route
 						path="/"
 						exact
-						component={
-							<Home
-								showAddTask={showAddTask}
-								addTask={addTask}
-								tasks={tasks}
-								deleteTask={deleteTask}
-								toggleReminder={toggleReminder}
-							/>
-						}
+						Component={() => (
+							<>
+								{showAddTask && <AddTask onAdd={addTask} />}
+								{tasks.length > 0 ? (
+									<Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder} />
+								) : (
+									'No Tasks!'
+								)}
+							</>
+						)}
 					/>
-					<Route path="/about" component={About} />
+					<Route path="/about" element={<About />} />
 				</Routes>
 				<Footer />
 			</div>
